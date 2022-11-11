@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>word-relay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/word-relay.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/08ebc00fc6.js" crossorigin="anonymous"></script>
+    <script src="js/gsap/gsap.min.js"></script>
+    <script src="js/gsap/ScrollToPlugin.min.js"></script>
+    <script src="js/splitting.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/hangul-tools.js"></script>
+    <script src="js/jquery-3.6.1.min.js"></script>
+  </head>
+  <body>
+    <header id="header">
+      <h1>word <strong>relay</strong></h1>
+    </header>
+    <ul id="word-list">
+      <li></li>
+    </ul>
+    <div id="input">
+      <input type="text" id="word" />
+    </div>
+    <script>
+      // console.log(HanTools.dueum("님"));
+      // console.log(HanTools.dueum("림"));
+      // console.log(HanTools.dueum("김"));
+      // console.log(HanTools.dueum("람"));
+      // console.log(HanTools.dueum("남"));
+      let txt = "기러기";
+      const wordArray = [txt];
+      $("#word-list li").text(txt);
+      $("#word").on("keyup", function (e) {
+        // console.log(e.keyCode);
+        if (e.keyCode === 13) {
+          const word = $("#word");
+          const inputValue = word.val();
+          const firstChar = inputValue.charAt(0);
+          const dueumLastChar = HanTools.dueum(txt.charAt(2));
+          const lastChar = txt.charAt(2);
+
+          if (inputValue.length === 3 && (firstChar === lastChar || firstChar === dueumLastChar) && !wordArray.includes(inputValue)) {
+            console.log("딩동댕");
+            txt = inputValue;
+            //$("#word-list li").text(txt);
+            $("#word-list").append(`<li>${txt}</li>`);
+            wordArray.push(txt);
+          } else {
+            gsap.from("#word", { x: 100, ease: "elastic" });
+          }
+          word.val("");
+          word.focus();
+        }
+      });
+    </script>
+  </body>
+</html>

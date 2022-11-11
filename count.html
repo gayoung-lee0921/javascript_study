@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>count-relay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/word-relay.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/08ebc00fc6.js" crossorigin="anonymous"></script>
+    <script src="js/gsap/gsap.min.js"></script>
+    <script src="js/gsap/ScrollToPlugin.min.js"></script>
+    <script src="js/splitting.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/hangul-tools.js"></script>
+    <script src="js/jquery-3.6.1.min.js"></script>
+  </head>
+  <body>
+    <header id="header">
+      <h1>count <strong>relay</strong></h1>
+    </header>
+    <div>
+      <span class="num" style="font-size: 200px; color: #fff">0</span>
+      <span class="num02" style="font-size: 200px; color: #fff">0</span>
+      <span class="num03" style="font-size: 200px; color: #fff">0</span>
+    </div>
+    <script>
+      let count = 0;
+      let count02 = 0;
+      let count03 = 0;
+
+      function aa() {
+        count += 1;
+        $(".num").text(count);
+        if (count >= 100) {
+          clearInterval(clear);
+        }
+      }
+      function bb() {
+        count02 += 2;
+        $(".num02").text(count02);
+        if (count02 >= 150) {
+          clearInterval(clear02);
+        }
+      }
+      //brower가 자동으로 호출
+      let clear = setInterval(aa, 1000);
+      let clear02 = setInterval(bb, 1000);
+
+      function cc() {
+        count03++;
+        $(".num03").text(count03);
+        if (count03 >= 250) {
+          cancelAnimationFrame(cc);
+        } else {
+          requestAnimationFrame(cc); // 재귀호출
+        }
+      }
+
+      requestAnimationFrame(cc);
+    </script>
+  </body>
+</html>
