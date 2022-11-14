@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Corona</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/fancybox.css" />
+    <link rel="stylesheet" href="css/lightpick.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/corona.css" />
+    <link rel="stylesheet" href="css/word-relay.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/08ebc00fc6.js" crossorigin="anonymous"></script>
+    <script src="js/gsap/gsap.min.js"></script>
+    <script src="js/gsap/ScrollToPlugin.min.js"></script>
+    <script src="js/splitting.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/hangul-tools.js"></script>
+    <script src="js/fancybox.umd.js"></script>
+    <script src="js/jquery-3.6.1.min.js"></script>
+    <script src="js/chart.min.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/lightpick.js"></script>
+  </head>
+  <body>
+    <header id="header">
+      <h1>Corona</h1>
+    </header>
+    <div class="search">
+      <input type="text" id="date" />
+    </div>
+    <div class="result">
+      <div class="loading">코로나 데이터가 오는 중입니다.</div>
+      <div class="error">
+        알 수 없는 오류로 코로나 데이터를 불러오지 못했습니다. <br />
+        다시 한 번 날짜를 선택하세요
+      </div>
+      <canvas id="coronaChart"> </canvas>
+    </div>
+    <script>
+      const temp = [-1, -1, -1, 0, 0, 0, 1, 1];
+      const txtTemp = ["가", "나", "다", "라", "마", "바", "사", "간", "단", "히"];
+      const txtObjTemp = [{ name: "가" }, { name: "나" }, { name: "다" }, { name: "라" }, { name: "마" }, { name: "바" }, { name: "사" }, { name: "간" }, { name: "단" }, { name: "히" }];
+      temp.sort(function (a, b) {
+        if (a > b) return 1;
+        else if (a < b) return -1;
+        else if (a === b) return 0;
+      });
+      console.log(temp);
+
+      //   $.ajax({
+      //     url: "http://apis.data.go.kr/1352000/ODMS_COVID_04/callCovid04Api?serviceKey=T9IhJwI%2FJb2FttnGQcCmlgduo5RYD2Fjt3AWd4MUmBSXUu9pt8s0aKC3aDCzM7iL7Tx4U4XCDUA5pVj2ySISzw%3D%3D&apiType=json&std_day=2022-11-13&_type=json",
+      //   })
+
+      const picker = new Lightpick({
+        field: document.querySelector("#date"),
+        format: "YYYY-MM-DD",
+        onSelect: function (date) {
+          $("#date").text(date.format("YYYY-MM-DD"));
+          loadCorona(date.format("YYYY-MM-DD"));
+        },
+      });
+
+      let myChart = null;
+      function loadCorona(date) {
+        const cities = [];
+        const incDecList = [];
+        const bgcolorList = [];
+        const bordercolorList = [];
+        if (myChart !== null) {
+          myChart.destroy();
+          myChart = null;
+        }
+        $(".loading").removeClass("off");
+        $(".error").removeClass("on");
+
+        $.ajax({
+          url: "http://apis.data.go.kr/1352000/ODMS_COVID_04/callCovid04Api",
+          data: {
+            serviceKey: "T9IhJwI/Jb2FttnGQcCmlgduo5RYD2Fjt3AWd4MUmBSXUu9pt8s0aKC3aDCzM7iL7Tx4U4XCDUA5pVj2ySISzw==",
+            apiType: "xml",
+            std_day: date,
+          },
+          dataType: "xml",
+        })
+          .done(function (response) {
+            const list = $(response).find("item");
+
+            if (list.length <= 0) {
+              $(".loading").addClass("off");
+              $(".error").addClass("on");
+
+              return;
+            }
+            list.sort(function (a, b) {
+              const tempA = $(a).find("gubun").text();
+              const tempB = $(b).find("gubun").text();
+              // const tempA = parseInt($(a).find("incDec").text());
+              // const tempB = parseInt($(b).find("incDec").text());
+              if (tempA > tempB) return 1;
+              else if (tempA < tempB) return -1;
+              else if (tempA === tempB) return 0;
+              // return tempA - tempB;
+            });
+            //   console.log($(list[0]).find("gubun").text());
+            //   for (let i = 0; i < list.length; i++) {
+            //     console.log($(list[i]).find("gubun").text());
+            //   }
+            // 배열의 갯수만큼 반복문을 돌게하는 방법
+            $.each(list, function (idx, item) {
+              // 배열의 요소 추가 .push()
+              cities.push($(item).find("gubun").text());
+              incDecList.push($(item).find("incDec").text());
+
+              // 차트의 색상을 랜덤하게 넣는 방법(Math.random(0~1 사이의 실수) 매서드를 이용해서 숫자를 뽑고 floor를 통해 소수를 버려버림)
+              const r = Math.floor(Math.random() * 256);
+              const g = Math.floor(Math.random() * 256);
+              const b = Math.floor(Math.random() * 256);
+              bgcolorList.push(`rgba(${r},${g},${b},0.2)`);
+              bordercolorList.push(`rgba(${r},${g},${b},1)`);
+            });
+            // 데이터를 받고 난 후에 그래프가 그려져야 됨(비동기를 동기로 움직이도록 만듦)
+
+            myChart = new Chart(ctx, {
+              type: "bar",
+              data: {
+                labels: cities,
+                datasets: [
+                  {
+                    label: "코로나 확진자 수",
+                    data: incDecList,
+                    backgroundColor: bgcolorList,
+                    borderColor: bordercolorList,
+                    borderWidth: 1,
+                  },
+                ],
+              },
+              options: {
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                  },
+                },
+              },
+            });
+            // 차트에 데이터들이 모두 들어가고 그래프가 완성이 되면 .loading에 off가 붙음
+            $(".loading").addClass("off");
+          })
+          .fail(function (error) {
+            console.log(error);
+          });
+      }
+      moment().format("YYYY-MM-DD");
+      loadCorona(moment().format("YYYY-MM-DD"));
+      $("#date").val(moment().format("YYYY-MM-DD"));
+      const ctx = document.querySelector("#coronaChart").getContext("2d"); // js에서 찾는법
+      //   $("#coronaChart).get(0) => jqery에서 dom 찾는법
+    </script>
+  </body>
+</html>
