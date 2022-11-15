@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>portfolio portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/fancybox.css" />
+    <link rel="stylesheet" href="css/lightpick.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/pinterest.css" />
+    <link rel="stylesheet" href="css/word-relay.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/08ebc00fc6.js" crossorigin="anonymous"></script>
+    <script src="js/gsap/gsap.min.js"></script>
+    <script src="js/gsap/ScrollToPlugin.min.js"></script>
+    <script src="js/splitting.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/hangul-tools.js"></script>
+    <script src="js/fancybox.umd.js"></script>
+    <script src="js/jquery-3.6.1.min.js"></script>
+    <script src="js/chart.min.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/lightpick.js"></script>
+    <script src="js/isotope.pkgd.min.js"></script>
+    <script src="js/imagesloaded.pkgd.min.js"></script>
+    <!-- 이미지의 크기가 다를 때 한꺼번에 레이아웃을 설정하는 방법 -->
+  </head>
+  <body>
+    <header id="header">
+      <h1>portfolio <strong>portfolio</strong></h1>
+    </header>
+
+    <div class="coordinate">
+      <label><span>screen</span><input type="text" id="screen" /></label>
+      <label><span>offset</span><input type="text" id="offset" /> </label>
+      <label><span>page</span><input type="text" id="page" /></label>
+      <label><span>client</span><input type="text" id="client" /></label>
+    </div>
+
+    <div class="category">
+      <ul>
+        <li class="on" data-filter="item">all</li>
+        <li data-filter="paint">paint</li>
+        <li data-filter="sketch">sketch</li>
+        <li data-filter="photo">photo</li>
+      </ul>
+    </div>
+
+    <div class="list">
+      <ul class="item-list">
+        <!-- <li>
+          <a href="">
+            <div class="img"><img src="images/01.jpg" alt="" /></div>
+            <div class="info">
+              <h2>제목 들어갑니다</h2>
+              <p class="desc">내용이 들어갑니다</p>
+              <p class="point">점수 들어갑니다</p>
+            </div>
+          </a>
+        </li> -->
+      </ul>
+    </div>
+    <div class="cursor">
+      <span class="txt"> </span>
+    </div>
+
+    <script>
+      $.ajax({ url: "data/portfolio.json" })
+        .done(function (response) {
+          console.log(response);
+          const typoList = response.typoList;
+          let listhtml = "";
+          // 순환 반복(iteration) : 반복을 몇 회 해야되는 모를 때 사용
+          // idx: 순서, item: 내가 필요한 정보
+          $.each(typoList, function (idx, item) {
+            let categoryHtml = "";
+            $.each(item.category, function (idx02, item02) {
+              categoryHtml += `<span>#${item02}</span>`;
+            });
+            listhtml += `<li class="item ${item.category.join(" ")}">
+                        <a href="images/${item.img}" data-fancybox="${item.category}">
+                          <div class="img"><img src="images/${item.img}" alt="" /></div>
+                          <div class="info">
+                            <h2>${item.title}</h2>
+                            <p class="desc">${item.desc}</p>
+                            <p class="category">${categoryHtml}</p>
+                            <div class="footer">
+                              <p class="point">${item.point}</p>
+                              <p class="author">${item.author}</p>
+                              </div>
+                          </div>
+                        </a>
+                      </li>`;
+          });
+          $(".list ul").html(listhtml); // tag를 만들어서 끼워 넣은 상태, 이미지가 아직 완전히 로딩이 되진 않았음
+
+          // 무한 스크롤 때 사용
+          const grid = $(".item-list").isotope({
+            itemSelector: ".item",
+            layoutMode: "masonry",
+            getSortData: {
+              sortPoint: ".point",
+            },
+          });
+          grid.imagesLoaded().progress(function () {
+            grid.isotope("layout");
+          });
+
+          $(".category ul li").on("click", function () {
+            $(this).addClass("on").siblings().removeClass("on");
+            const filterWord = $(this).data("filter");
+            grid.isotope({ filter: `.${filterWord}`, sortBy: "sortPoint", sortAscending: false });
+          });
+
+          // 크기가 정해져 있을 때 사용
+          // const gridAll = $(".item-list").imagesLoaded(function () {
+          //   gridAll.isotope({
+          //     itemSelector: ".item",
+          //     layoutMode: "masonry",
+          //   });
+          // });
+        })
+
+        .fail(function (error) {
+          console.log(error);
+        });
+
+      // 마우스 좌표 찍기
+      $(window).on("mousemove", function (e) {
+        const mx = e.clientX;
+        const my = e.clientY;
+        gsap.to(".cursor", { left: mx, top: my, ease: "power4" });
+        $("#screen").val(`x:${e.screenX} / y:${e.screenY}`);
+        $("#offset").val(`x:${e.offsetX} / y:${e.offsetY}`);
+        $("#page").val(`x:${e.pageX} / y:${e.pageY}`);
+        $("#client").val(`x:${e.clientX} / y:${e.clientY}`);
+      });
+
+      // event delegate(이벤트 위임)
+      $(".list ul").on("mouseenter", "li", function () {
+        $(".cursor .txt").text("click");
+        gsap.to(".cursor", { width: 100, height: 100, backgroundColor: "#f00", ease: "elastic" });
+      });
+      $(".list ul").on("mouseleave", "li", function () {
+        $(".cursor .txt").text("");
+        gsap.to(".cursor", { width: 20, height: 20, backgroundColor: "#rgba(255,255,255,0.5)", ease: "power4" });
+      });
+
+      $(".category ul li").on("mouseenter", function () {
+        $(".cursor .txt").text("click");
+        gsap.to(".cursor", { width: 100, height: 100, backgroundColor: "#f00", ease: "elastic" });
+      });
+      $(".category ul li").on("mouseleave", function () {
+        $(".cursor .txt").text("");
+        gsap.to(".cursor", { width: 20, height: 20, backgroundColor: "#rgba(255,255,255,0.5)", ease: "power4" });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>overwatch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/fancybox.css" />
+    <link rel="stylesheet" href="css/lightpick.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/overwatch.css" />
+    <link rel="stylesheet" href="css/word-relay.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/08ebc00fc6.js" crossorigin="anonymous"></script>
+    <script src="js/gsap/gsap.min.js"></script>
+    <script src="js/gsap/ScrollToPlugin.min.js"></script>
+    <script src="js/splitting.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/hangul-tools.js"></script>
+    <script src="js/fancybox.umd.js"></script>
+    <script src="js/jquery-3.6.1.min.js"></script>
+    <script src="js/chart.min.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/lightpick.js"></script>
+    <script src="js/isotope.pkgd.min.js"></script>
+    <script src="js/imagesloaded.pkgd.min.js"></script>
+  </head>
+  <body>
+    <header id="header">
+      <h1>overwatch</h1>
+    </header>
+
+    <div class="role">
+      <ul>
+        <li class="on" data-filter="item">모두</li>
+        <li data-filter="돌격">돌격</li>
+        <li data-filter="공격">공격</li>
+        <li data-filter="지원">지원</li>
+      </ul>
+    </div>
+
+    <div class="hero">
+      <ul class="hero-list"></ul>
+    </div>
+
+    <div class="mouse">
+      <a href="#">
+        <img src="" alt="" />
+      </a>
+    </div>
+
+    <script>
+      $.ajax({ url: "data/overwatch.json" })
+        .done(function (response) {
+          console.log(response);
+          const typoList = response.typoList;
+          let listHtml = "";
+          $.each(typoList, function (idx, item) {
+            listHtml += `<li class="item ${item.role}">
+                          <a href="">
+                            <img src="images/overwatch-images/${item.img}" alt="" />
+                            <div class="info">
+                                <p class="name">${item.name}</p>
+                                <p class="role">${item.role}</p>
+                                <p class="hometown">${item.hometown}</p>
+                                <p class="desc">${item.desc}</p>
+                            </div>
+                          </a>
+                        </li>`;
+          });
+          $(".hero .hero-list").html(listHtml);
+
+          const grid = $(".hero ul").isotope({
+            itemSelector: ".item",
+            layoutMode: "masonry",
+          });
+          grid.imagesLoaded().progress(function () {
+            grid.isotope("layout");
+          });
+
+          $(".role ul li").on("click", function () {
+            $(this).addClass("on").siblings().removeClass("on");
+            const filterWord = $(this).data("filter");
+            grid.isotope({ filter: `.${filterWord}` });
+          });
+        })
+
+        .fail(function (error) {
+          console.log(error);
+        });
+    </script>
+  </body>
+</html>
