@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>scroll-trigger</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/fancybox.css" />
+    <link rel="stylesheet" href="css/lightpick.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/scroll-trigger01.css" />
+    <link rel="stylesheet" href="css/word-relay.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/08ebc00fc6.js" crossorigin="anonymous"></script>
+    <script src="js/gsap/gsap.min.js"></script>
+    <script src="js/gsap/ScrollToPlugin.min.js"></script>
+    <script src="js/splitting.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/hangul-tools.js"></script>
+    <script src="js/fancybox.umd.js"></script>
+    <script src="js/jquery-3.6.1.min.js"></script>
+    <script src="js/chart.min.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/lightpick.js"></script>
+    <script src="js/isotope.pkgd.min.js"></script>
+    <script src="js/imagesloaded.pkgd.min.js"></script>
+    <script src="js/gsap/ScrollTrigger.min.js"></script>
+  <body>
+    <header id="header">
+      <h1>scroll <strong>animation</strong></h1>
+    </header>
+    <div>
+      <div class="box red">red</div>
+      <div class="box green">green</div>
+      <div class="box blue">blue</div>
+    </div>
+
+    <script>
+        // .red의 위치값
+        // const redTop =  $(".red").offset().top;
+        // console.log(redTop)
+        // 스크롤 위치값
+        // $(window).on("scroll",function(){
+        //     const st = $(window).scrollTop();
+        //     console.log(st);
+        // })
+        /*prettier-ignore*/
+        gsap.to(".red",{x:1200, rotation:360,duration:5, scrollTrigger:{
+            trigger:".red", 
+            markers: {fontSize:"20px", startColor:"fff",endColor:"#3399cc", indent: 50},
+            start: "top-=200 center", //start의 첫번째는 trigger되는 dom의 상단 지점, 두번째는 화면의 하단 지점
+            end: "bottom+=200 top+=200",  //end 첫번째는 trigger되는 dom의 하단 지점, 두번째는 화면의 상단 지점
+            // scrub:1,
+            pin:true,
+            toggleActions: "restart restart reverse pause", //scrub 있으면 작동 안됨, 내려올 때 2개 올라갈때 2개 play, restart, pause, reverse, resume
+        }})
+        gsap.to(".green",{x:1200, rotation:360,duration:5, scrollTrigger:{
+            trigger:".green", 
+           
+        }})
+        gsap.to(".blue",{x:1200, rotation:360,duration:5, scrollTrigger:{trigger:".blue", markers: {}} })
+    </script>
+  </body>
+</html>
