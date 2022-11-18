@@ -84,18 +84,20 @@
               categoryHtml += `<span>#${item02}</span>`;
             });
             listhtml += `<li class="item ${item.category.join(" ")}">
-                        <a href="images/${item.img}" data-fancybox="${item.category}">
-                          <div class="img"><img src="images/${item.img}" alt="" /></div>
-                          <div class="info">
-                            <h2>${item.title}</h2>
-                            <p class="desc">${item.desc}</p>
-                            <p class="category">${categoryHtml}</p>
-                            <div class="footer">
-                              <p class="point">${item.point}</p>
-                              <p class="author">${item.author}</p>
+                          <div class="inner">
+                            <a href="images/${item.img}" data-fancybox="${item.category}" data-caption="<a href='${item.link}' target='_blank'>${item.title}</a>">
+                              <div class="img"><img src="images/${item.img}" alt="" /></div> 
+                            </a>
+                            <div class="info">
+                              <h2>${item.title}</h2>
+                              <p class="desc">${item.desc}</p>
+                              <p class="category">${categoryHtml}</p>
+                              <div class="footer">
+                                <a href="${item.link}" target="_blank">바로가기</a>
                               </div>
+                            </div>
                           </div>
-                        </a>
+
                       </li>`;
           });
           $(".list ul").html(listhtml); // tag를 만들어서 끼워 넣은 상태, 이미지가 아직 완전히 로딩이 되진 않았음

@@ -336,7 +336,64 @@ contactTL
       each: 0.01,
     },
   })
+  .from("#email", { opacity: 0, x: 100 })
+  .from("#name", { opacity: 0, x: 100 })
+  .from("#phone", { opacity: 0, x: 100 })
+  .from("#contents", { opacity: 0, x: 100 })
+  .from("#contact .btn-send", { opacity: 0, x: 100 })
+
   .from("#contact .prince", {
     opacity: 0,
     duration: 1,
   });
+
+// 팝업창
+/*prettier-ignore*/
+if (Cookies.get("ondDay") !== "ok") {
+  gsap.to(".popup", { top: 100, duration: 1, ease: "back" });
+}
+ else { // '오늘 하루 팝업창을 열지 않겠다'를 체크하면 .popup을 화면상에서 아예 삭제시킴
+  $(".popup").remove();
+}
+
+$(".popup .btn-close").on("click", function () {
+  gsap.to(".popup", { top: -1000, ease: "back.in", duration: 1 });
+});
+$(".popup .btn-oneday").on("click", function () {
+  Cookies.set("ondDay", "ok", { expires: 1 });
+  gsap.to(".popup", { top: -1000, ease: "back.in", duration: 1 });
+});
+
+//emailjs 사용
+$(".btn-send").on("click", function () {
+  emailjs.init("51pyfXcN0sCrtDo6c");
+  const templateParams = {
+    subject: $("#subject").val(),
+    sendname: $("#name").val(),
+    tel: $("#phone").val(),
+    email: $("#email").val(),
+    contents: $("#contents").val(),
+  };
+
+  emailjs.send("service_kgulg6j", "template_e6wlre8", templateParams).then(
+    function (response) {
+      console.log("SUCCESS!", response.status, response.text);
+      $(".message-box").addClass("on");
+      $(".message-box .txt").text("메일이 발송 되었습니다");
+      $("#email").val("");
+      $("#subject").val("");
+      $("#name").val("");
+      $("#phone").val("");
+      $("#contents").val("");
+    },
+    function (error) {
+      console.log("FAILED...", error);
+      $(".message-box").addClass("on");
+      $(".message-box .txt").text("알 수 없는 오류로 메일이 발송되지 않았습니다.");
+    }
+  );
+});
+
+$(".message-box .btn-close").on("click", function () {
+  $(".message-box").removeClass("on");
+});

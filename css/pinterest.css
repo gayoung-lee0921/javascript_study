@@ -38,28 +38,28 @@
   padding: 10px;
   box-sizing: border-box;
 }
-.list ul li a {
+.list ul li .inner {
   display: block;
   background-color: #fff;
   padding: 10px;
 }
-.list ul li a img {
+.list ul li .inner img {
   width: 100%;
 }
-.list ul li a .info h2 {
+.list ul li .inner .info h2 {
   font-size: 20px;
   font-weight: 700;
   margin: 10px 0;
 }
-.list ul li a .info .desc {
+.list ul li .inner .info .desc {
   color: #666;
   line-height: 1.5;
 }
-.list ul li a .info .category {
+.list ul li .inner .info .category {
   margin-top: 20px;
   margin-bottom: 0;
 }
-.list ul li a .info .category span {
+.list ul li .inner .info .category span {
   display: inline-block;
   margin-right: 5px;
   padding: 7px 20px;
@@ -73,17 +73,17 @@
   overflow: hidden;
   text-shadow: 1px 1px 0px #0d0d0d,2px 2px 0px #0d0d0d,3px 3px 0px #0d0d0d,4px 4px 0px #0d0d0d,5px 5px 0px #0d0d0d,6px 6px 0px #0d0d0d,7px 7px 0px #0d0d0d,8px 8px 0px #0d0d0d,9px 9px 0px #0d0d0d,10px 10px 0px #0d0d0d,11px 11px 0px #0d0d0d,12px 12px 0px #0d0d0d,13px 13px 0px #0d0d0d,14px 14px 0px #0d0d0d,15px 15px 0px #0d0d0d,16px 16px 0px #0d0d0d,17px 17px 0px #0d0d0d,18px 18px 0px #0d0d0d,19px 19px 0px #0d0d0d,20px 100px 0px #0d0d0d;
 }
-.list ul li a .info .footer {
+.list ul li .inner .info .footer {
   margin-top: 50px;
   display: flex;
   justify-content: space-between;
 }
-.list ul li a .info .footer .point {
+.list ul li .inner .info .footer .point {
   color: #f00;
   font-size: 36px;
   font-weight: 700;
 }
-.list ul li a .info .footer .author {
+.list ul li .inner .info .footer .author {
   font-size: 18px;
   font-weight: 700;
   margin-right: 10px;
